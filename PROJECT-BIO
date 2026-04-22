@@ -1,0 +1,346 @@
+# 🚀 NextHire — AI-Powered Job Portal
+
+### A scalable full-stack platform built using **Microservices Architecture**
+
+### with **AI Resume Builder, Resume Analyzer, ATS Score, Career Guidance, Kafka, and Recruiter Workflows**
+
+---
+
+# 📌 1. What is this Project?
+
+**NextHire** is an advanced **Job Portal Platform** designed to simulate **real-world hiring systems**.
+
+It combines:
+
+* Job Portal System
+* AI Resume Tools
+* Career Guidance Engine
+* Microservices Backend
+* Event-driven architecture (Kafka)
+
+👉 This is not a CRUD project — this is a **production-style system design project**.
+
+---
+
+# 🎯 2. Why this Project?
+
+Most job portals:
+
+* only allow job posting
+* basic apply functionality
+
+❌ Problems:
+
+* users don’t know resume quality
+* recruiters waste time filtering
+* no career guidance
+* no resume scoring
+
+---
+
+## ✅ NextHire solves:
+
+### For Job Seekers
+
+* Resume Builder
+* Resume Score (ATS)
+* Job matching
+* Career roadmap
+
+### For Recruiters
+
+* AI-assisted screening
+* Better candidate filtering
+* Faster hiring decisions
+
+---
+
+# 👥 3. Who Uses This Platform?
+
+## 🧑‍💻 Job Seeker
+
+A user who wants a job
+
+### Capabilities:
+
+* Register/Login
+* Build Resume
+* Upload Resume
+* Check Resume Score
+* Apply for Jobs
+* Track Applications
+* Get Career Suggestions
+
+---
+
+## 🧑‍💼 Recruiter
+
+A company or HR
+
+### Capabilities:
+
+* Post Jobs
+* View Applicants
+* Analyze Resume Score
+* Shortlist Candidates
+* Manage Hiring Flow
+
+---
+
+# 🧠 4. Core Idea (Important for Interview)
+
+👉 System built on:
+
+* Microservices
+* Event-driven architecture
+* AI integration
+* Role-based flows
+
+👉 Goal:
+**Reduce hiring friction + improve candidate quality**
+
+---
+
+# 🏗️ 5. System Architecture
+
+```text
+Frontend (Next.js)
+        ↓
+Auth Layer (JWT + Middleware)
+        ↓
+-------------------------------------
+| Auth | User | Job | Payment       |
+-------------------------------------
+        ↓
+Kafka (Event Streaming)
+        ↓
+Utils Service (Mail + AI)
+        ↓
+-------------------------------------
+| PostgreSQL | Redis | Cloudinary  |
+-------------------------------------
+```
+
+---
+
+# 🔄 6. Application Flow
+
+## 🧑 Job Seeker Flow
+
+```text
+Register/Login
+   ↓
+Complete Profile
+   ↓
+Create/Upload Resume
+   ↓
+Resume Analyzer + ATS Score
+   ↓
+Browse Jobs
+   ↓
+Apply for Jobs
+   ↓
+Track Applications
+   ↓
+Get Notifications
+```
+
+---
+
+## 🧑‍💼 Recruiter Flow
+
+```text
+Register/Login
+   ↓
+Create Company Profile
+   ↓
+Post Job
+   ↓
+Receive Applications
+   ↓
+View Resume + Score
+   ↓
+Shortlist Candidates
+```
+
+---
+
+# 🤖 7. AI Features (Key Highlight)
+
+## 🧾 1. Resume Builder
+
+* Structured resume creation
+* ATS-friendly format
+* Clean sections
+
+👉 Why:
+Most resumes fail ATS systems
+
+---
+
+## 📊 2. Resume Analyzer
+
+* Skill gap detection
+* Content quality check
+* Formatting issues
+
+👉 Why:
+Improves selection chances
+
+---
+
+## 📈 3. Resume Score (ATS Score)
+
+* Resume vs Job match %
+* Keyword analysis
+
+👉 Why:
+Shows how strong your resume is
+
+---
+
+## 🛣️ 4. Career Guidance
+
+* Personalized roadmap
+* Skill recommendations
+* Career direction
+
+👉 Example:
+“How to become backend developer?”
+
+---
+
+# 📦 8. Feature Breakdown
+
+## 🧑 Job Seeker
+
+* Authentication (JWT)
+* Resume Builder
+* Resume Upload
+* Resume Analyzer
+* ATS Score Checker
+* Apply for Jobs
+* Track Applications
+* Profile Management
+
+---
+
+## 🧑‍💼 Recruiter
+
+* Job Posting
+* Candidate Listing
+* Resume Screening
+* Hiring Dashboard
+* Application Management
+
+---
+
+## ⚙️ Platform Features
+
+* Kafka Async Communication
+* Email Notifications
+* Redis Caching
+* Secure Auth Flow
+* Role-based access
+
+---
+
+# 🔒 9. Security
+
+* JWT Authentication
+* Password Hashing
+* Reset Token Flow
+* Protected Routes
+* Input Validation
+
+---
+
+# 🛠️ 10. Tech Stack
+
+## Frontend
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+
+## Backend
+
+* Node.js
+* Express
+* TypeScript
+* Microservices
+
+## System
+
+* Kafka (Event Streaming)
+* Redis (Cache)
+* PostgreSQL (Neon DB)
+* Cloudinary (Files)
+
+---
+
+# 📁 11. Project Structure
+
+```text
+next-hire-job-portal/
+│
+├── frontend/
+│
+├── services/
+│   ├── auth/
+│   ├── user/
+│   ├── job/
+│   ├── payment/
+│   └── utils/
+│
+└── README.md
+```
+
+---
+
+# 🚀 12. Getting Started
+
+```bash
+git clone https://github.com/Suraj854204/next-hire-job-portal.git
+cd next-hire-job-portal
+```
+
+Run services individually:
+
+```bash
+cd services/auth
+npm install
+npm run dev
+```
+
+---
+
+# 🌟 13. Key Highlights
+
+* Microservices Architecture
+* Kafka Event-driven system
+* Resume Builder + ATS Score
+* Job Seeker + Recruiter system
+* Real-world scalable design
+
+---
+
+# 📘 14. What You Learn
+
+* System Design
+* Backend Architecture
+* Kafka usage
+* Auth systems
+* Resume evaluation logic
+
+---
+
+# 👨‍💻 15. Author
+
+Suraj Kumar Singh
+GitHub: https://github.com/Suraj854204
+
+---
+
+# ⭐ Star this repo if you like it!
