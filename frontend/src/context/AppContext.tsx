@@ -14,12 +14,23 @@ export const payment_service = "http://localhost:5004";
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Safe error message extractor
+// Prevents crash when error.response is undefined (network error, CORS, timeout)
+function getErrorMessage(error: any, fallback = "Something went wrong"): string {
+  return error?.response?.data?.message ?? error?.message ?? fallback;
+}
+
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
   const [applications, setApplications] = useState<Application[]>([]);
+
+  // FIX: Per-job loading state
+  // Previously: single btnLoading boolean → ALL cards entered loading together
+  // Now: Set<number> tracks exactly which job_id is being applied to
+  const [applyingJobIds, setApplyingJobIds] = useState<Set<number>>(new Set());
 
   const token = Cookies.get("token");
 
@@ -49,31 +60,31 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
-  async function updateProfilePic(fromData: any) {
+  async function updateProfilePic(formData: FormData) {
     setLoading(true);
     try {
-      const { data } = await axios.put(`${user_service}/api/user/update/pic`, fromData, {
+      const { data } = await axios.put(`${user_service}/api/user/update/pic`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(data.message);
       fetchUser();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
   }
 
-  async function updateResume(fromData: any) {
+  async function updateResume(formData: FormData) {
     setLoading(true);
     try {
-      const { data } = await axios.put(`${user_service}/api/user/update/resume`, fromData, {
+      const { data } = await axios.put(`${user_service}/api/user/update/resume`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(data.message);
       fetchUser();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -90,7 +101,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.success(data.message);
       fetchUser();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error));
     } finally {
       setBtnLoading(false);
     }
@@ -103,7 +114,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     toast.success("Logged out successfully");
   }
 
-  async function addSkill(skill: string, setSkill: React.Dispatch<React.SetStateAction<string>>) {
+  async function addSkill(
+    skill: string,
+    setSkill: React.Dispatch<React.SetStateAction<string>>
+  ) {
     setBtnLoading(true);
     try {
       const { data } = await axios.post(
@@ -115,7 +129,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setSkill("");
       fetchUser();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error));
     } finally {
       setBtnLoading(false);
     }
@@ -131,12 +145,17 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.success(data.message);
       fetchUser();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(getErrorMessage(error));
     }
   }
 
   async function applyJob(job_id: number) {
-    setBtnLoading(true);
+    // Guard: already applying to this specific job → ignore duplicate click
+    if (applyingJobIds.has(job_id)) return;
+
+    // Mark ONLY this job as loading — all other cards stay unaffected
+    setApplyingJobIds((prev) => new Set(prev).add(job_id));
+
     try {
       const { data } = await axios.post(
         `${user_service}/api/user/apply/job`,
@@ -146,13 +165,19 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.success(data.message);
       fetchApplications();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      // FIX: error.response can be undefined on network/CORS/timeout errors
+      // Previously: error.response.data.message → TypeError crash
+      toast.error(getErrorMessage(error, "Failed to apply. Please try again."));
     } finally {
-      setBtnLoading(false);
+      // Remove only this job from loading — not a full reset
+      setApplyingJobIds((prev) => {
+        const next = new Set(prev);
+        next.delete(job_id);
+        return next;
+      });
     }
   }
 
-  // ✅ MAIN FIX — token nahi hai toh API call mat karo
   useEffect(() => {
     if (token) {
       fetchUser();
@@ -168,6 +193,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         user,
         loading,
         btnLoading,
+        applyingJobIds,
         setUser,
         isAuth,
         setIsAuth,

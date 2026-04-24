@@ -13,7 +13,7 @@ const Footer = () => {
       { label: "Resume Tips", href: "/resume-tips" },
     ],
     employers: [
-      { label: "Post a Job", href: "/post-job" },
+      { label: "Post a Job", href: "/jobs" },
       { label: "Talent Search", href: "/talent-search" },
       { label: "Pricing", href: "/pricing" },
       { label: "Hiring Resources", href: "/hiring-resources" },

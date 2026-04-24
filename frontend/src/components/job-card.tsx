@@ -26,13 +26,17 @@ interface JobCardProps {
   onToggleSave?: (id: number) => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, saved = false, onToggleSave }) => {
-  const { user, applications, applyJob, btnLoading } = useAppData();
+const JobCard: React.FC<JobCardProps> = ({
+  job,
+  saved = false,
+  onToggleSave,
+}) => {
+  const { user, applications, applyJob, applyingJobIds } = useAppData();
   const [applied, setApplied] = useState(false);
 
   useEffect(() => {
     if (applications && job.job_id) {
-      setApplied(applications.some((item: any) => item.job_id === job.job_id));
+      setApplied(applications.some((item) => item.job_id === job.job_id));
     }
   }, [applications, job.job_id]);
 
@@ -40,136 +44,147 @@ const JobCard: React.FC<JobCardProps> = ({ job, saved = false, onToggleSave }) =
   const isJobSeeker = user?.role === "jobseeker";
   const isRecruiter = user?.role === "recruiter";
   const showApply = isJobSeeker && !isClosed;
+  const isApplying = applyingJobIds.has(job.job_id);
 
   return (
     <Card
       className={`
-        relative flex h-full flex-col rounded-2xl border bg-background
-        transition-all duration-200 overflow-hidden
-        ${isClosed
-          ? "opacity-60 border-border/40"
-          : "border-border/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5 hover:border-blue-300/60 dark:hover:border-blue-700/50"
+        group relative flex h-full flex-col rounded-2xl overflow-hidden
+        border transition-all duration-300
+        bg-white dark:bg-[#0f1117]
+
+        ${
+          isClosed
+            ? "opacity-50 border-zinc-200 dark:border-zinc-800"
+            : `
+              border-zinc-200/80 dark:border-zinc-800/80
+              hover:-translate-y-1
+              hover:shadow-lg hover:shadow-blue-500/10
+              dark:hover:shadow-blue-400/10
+              hover:border-blue-300/60 dark:hover:border-blue-700/40
+            `
         }
       `}
     >
-      {/* Accent bar */}
-      <div className={`h-[2px] w-full ${isClosed ? "bg-muted" : "bg-linear-to-r from-blue-500 to-indigo-500"}`} />
+      {/* 🔥 Premium Hover Accent Line */}
+      <div className="absolute top-0 left-0 h-[2px] w-full opacity-0 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
 
-      {/* Save toggle */}
+      {/* ⭐ Save Button */}
       {onToggleSave && (
         <button
           onClick={() => onToggleSave(job.job_id)}
-          className="absolute right-3 top-4 z-10 p-1 rounded-lg text-muted-foreground/60 hover:text-yellow-400 transition-colors"
+          className="absolute right-3.5 top-4 z-10 p-1 rounded-lg text-zinc-300 dark:text-zinc-600 hover:text-amber-400 transition-all duration-200 hover:scale-110"
         >
-          {saved
-            ? <Star className="h-[15px] w-[15px] fill-yellow-400 text-yellow-400" />
-            : <StarOff className="h-[15px] w-[15px]" />
-          }
+          {saved ? (
+            <Star className="h-[15px] w-[15px] fill-amber-400 text-amber-400" />
+          ) : (
+            <StarOff className="h-[15px] w-[15px]" />
+          )}
         </button>
       )}
 
-      {/* Card body */}
-      <div className="flex flex-1 flex-col p-4 gap-3.5">
+      {/* BODY */}
+      <div className="flex flex-1 flex-col px-5 pt-4 pb-3 gap-4">
 
-        {/* Row 1 — logo + status */}
+        {/* Logo + Status */}
         <div className="flex items-center justify-between">
           <Link
             href={`/company/${job.company_id}`}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/50 bg-muted/40 p-1 shrink-0 hover:opacity-75 transition-opacity"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-1.5 shadow-sm"
           >
-            {job.company_logo
-              ? <img src={job.company_logo} alt={job.company_name} className="h-full w-full object-contain" />
-              : <Building2 className="h-4 w-4 text-muted-foreground" />
-            }
+            {job.company_logo ? (
+              <img
+                src={job.company_logo}
+                alt={job.company_name}
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <Building2 className="h-4 w-4 text-zinc-400" />
+            )}
           </Link>
 
           {isClosed ? (
-            <span className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-2.5 py-0.5 text-[10px] font-medium tracking-wide text-red-600 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400">
-              <XCircle className="h-2.5 w-2.5" /> Closed
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] bg-red-100 text-red-500">
+              <XCircle className="h-3 w-3" />
+              Closed
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-medium tracking-wide text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] bg-emerald-100 text-emerald-600">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Hiring
             </span>
           )}
         </div>
 
-        {/* Row 2 — title + company */}
-        <div className="space-y-0.5 pr-5">
+        {/* Title */}
+        <div>
           <Link href={`/jobs/${job.job_id}`}>
-            <h3 className="line-clamp-1 text-[14.5px] font-semibold text-foreground leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h3 className="text-[15px] font-bold text-zinc-900 dark:text-zinc-100 hover:text-blue-600 transition">
               {job.title}
             </h3>
           </Link>
-          <p className="flex items-center gap-1 text-[11.5px] text-muted-foreground">
+          <p className="flex items-center gap-1 text-[12px] text-zinc-400">
             {job.company_name}
-            <ShieldCheck className="h-3 w-3 text-blue-500 shrink-0" />
+            <ShieldCheck className="h-3 w-3 text-blue-500" />
           </p>
         </div>
 
-        {/* Row 3 — tags */}
-        <div className="flex flex-wrap gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-md border border-border/50 bg-muted/30 px-2 py-1 text-[10.5px] font-medium text-muted-foreground">
-            <MapPin className="h-2.5 w-2.5 text-blue-500" />
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2">
+          <span className="flex items-center gap-1 text-xs text-zinc-500">
+            <MapPin className="h-3 w-3 text-blue-500" />
             {job.location}
           </span>
-          <span className="inline-flex items-center gap-1 rounded-md border border-emerald-200/70 bg-emerald-50/80 px-2 py-1 text-[10.5px] font-medium text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400">
-            <CircleDollarSign className="h-2.5 w-2.5" />
+
+          <span className="flex items-center gap-1 text-xs text-emerald-600">
+            <CircleDollarSign className="h-3 w-3" />
             ₹{job.salary?.toLocaleString("en-IN")}
           </span>
+
           {job.job_type && (
-            <span className="inline-flex items-center gap-1 rounded-md border border-blue-200/70 bg-blue-50/80 px-2 py-1 text-[10.5px] font-medium text-blue-700 dark:border-blue-800/30 dark:bg-blue-950/20 dark:text-blue-400">
-              <Clock className="h-2.5 w-2.5" />
+            <span className="flex items-center gap-1 text-xs text-blue-600">
+              <Clock className="h-3 w-3" />
               {job.job_type}
             </span>
           )}
         </div>
 
-        {/* Row 4 — description */}
-        <p className="line-clamp-2 text-[12px] leading-relaxed text-muted-foreground/80">
-          {job.description || "Explore this opportunity and see if it aligns with your skills and career goals."}
+        {/* Description */}
+        <p className="text-[12px] text-zinc-400 line-clamp-2">
+          {job.description ||
+            "Explore this opportunity and grow your career."}
         </p>
-
       </div>
 
       {/* Footer */}
-      <div className="px-4 pb-4 pt-0 flex gap-2">
-        <Link href={`/jobs/${job.job_id}`} className={showApply ? "flex-1" : "w-full"}>
+      <div className="px-5 py-3 flex gap-2">
+        <Link href={`/jobs/${job.job_id}`} className="flex-1">
           <Button
             variant="outline"
             size="sm"
-            className="w-full h-8 rounded-xl text-[11.5px] font-medium border-border/60"
+            className="w-full h-8 text-xs"
           >
-            {isRecruiter ? "View Job" : "View Details"}
-            <ExternalLink className="ml-1.5 h-3 w-3" />
+            View Details
+            <ExternalLink className="ml-1 h-3 w-3" />
           </Button>
         </Link>
 
-        {showApply && (
-          applied ? (
-            <div className="flex flex-1 items-center justify-center gap-1.5 h-8 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-[11.5px] font-medium text-emerald-700 dark:border-emerald-800/30 dark:bg-emerald-950/20 dark:text-emerald-400">
-              <CheckCircle className="h-3 w-3" />
+        {showApply &&
+          (applied ? (
+            <div className="flex-1 flex items-center justify-center text-xs text-emerald-600 border rounded-xl">
+              <CheckCircle className="h-3 w-3 mr-1" />
               Applied
             </div>
           ) : (
             <Button
-              disabled={btnLoading}
               onClick={() => applyJob(job.job_id)}
               size="sm"
-              className="flex-1 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-[11.5px] font-medium"
+              className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-500"
             >
-              {btnLoading ? (
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              ) : (
-                <>
-                  <Briefcase className="mr-1 h-3 w-3" />
-                  Apply Now
-                </>
-              )}
+              <Briefcase className="mr-1 h-3 w-3" />
+              Apply
             </Button>
-          )
-        )}
+          ))}
       </div>
     </Card>
   );

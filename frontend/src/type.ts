@@ -85,6 +85,7 @@ export interface AppContextType {
   user: User | null;
   loading: boolean;
   btnLoading: boolean;
+  applyingJobIds: Set<number>; // ← NEW: per-job loading tracker
   isAuth: boolean;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
