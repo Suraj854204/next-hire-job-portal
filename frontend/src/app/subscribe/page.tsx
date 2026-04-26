@@ -1,3 +1,4 @@
+//final feture
 "use client";
 import useRazorpay from "@/components/scriptLoader";
 import { useRouter } from "next/navigation";
@@ -32,7 +33,7 @@ const SubscriptionPage = () => {
       );
 
       const options = {
-        key: "rzp_test_Sg45nVsDD9YYLH",
+        key: "rzp_test_SiCZvMSG3qSgOl",
         amount: order.amount,
         currency: "INR",
         name: "NextHire",

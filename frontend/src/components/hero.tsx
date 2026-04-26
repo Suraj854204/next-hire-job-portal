@@ -63,7 +63,7 @@ const HomeHeroSection = () => {
                   className="h-12 rounded-full px-7 text-base"
                 >
                   <Link
-                    href="/recruiter/post-job"
+                    href="/account"
                     className="flex items-center gap-2"
                   >
                     <Briefcase size={18} />

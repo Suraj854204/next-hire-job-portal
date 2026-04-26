@@ -16,14 +16,14 @@ export default function PostJobPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:8083/api/job/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer YOUR_TOKEN",
-        },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch("http://13.51.173.65:5003/api/job/create", {
+       method: "POST",
+       headers: {
+       "Content-Type": "application/json",
+       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(form),
+    });
 
       const data = await res.json();
       alert("Job Posted Successfully ✅");
